@@ -1,0 +1,28 @@
+# Secrets & environment — never commit these
+.env
+.env.*
+*.pem
+*.key
+*.p12
+secrets.*
+credentials.*
+config.local.*
+
+# Dependencies
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Build output
+dist/
+build/
+*.log
+
+# OS & editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

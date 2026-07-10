@@ -1,0 +1,18 @@
+# AI Platform Legal Analysis
+#Data Retention
+OpenAI (ChatGPT Enterprise): Does not use customer Inputs or Outputs to train OpenAI models. Retention is maintained only to provide the services and comply with legal requirements.
+Anthrophic (Claude/Bedrock): Data retention policies differ per tier, but Enterprise tiers default to zero model training on your data.
+Google (Vertex/Gemini):  Google’s Gemini API Additional Terms of Service state that your Customer Data is not used to train any Google or third-party foundation models. Data is retained strictly to provide the service.
+
+#Intellectual Property Ownership of Inputs & Outputs
+OpenAI: Assigns all rights to the Output to the user, provided the user complies with the terms. Does not claim ownership of user Inputs.
+Microsoft (Copilot/Azure): Generally does not claim ownership of the user's inputs or outputs. Provides varying levels of copyright protection for rights of enterprise customers who face claims of intellectual property infringement. 
+Google: Explicitly clarifies that it does not claim ownership between user's inputs and outputs. 
+
+#Privacy Boundaries
+Microsoft: Operates under the Microsoft Services Agreement, outlining standard privacy controls. Enterprise accounts are secured by HIPAA and GDPR compliance commitments, protecting against unauthorized internal use or vendor access.
+
+#References
+https://amstlegal.com/chatgpt-terms-explained/ - ChatGPT Terms of Service for Busineses: Updated Terms
+https://thetechcoaches.com/articles/intellectual-property-risks-and-ownership-in-popular-ai-tools-a-comprehensive-an - IP Risks and Ownership in Popular AI Tools
+https://amstlegal.com/anthropics-claude-ai-updated-terms-explained/ - Anthrophic's Claude AI Updates

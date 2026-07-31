@@ -206,20 +206,19 @@ def save_to_airtable(token, base_id, table_name, file_name, client_name, score, 
 
     clauses_text = "\n".join([f"- {c}" for c in missing_clauses]) if missing_clauses else "None"
 
-    # ONLY include the columns the portal populates.
-    # Match the text spelling and data types to your Airtable exactly.
+    # Clean payload mapped strictly to your populated parameters
     data = {
         "records": [
             {
                 "fields": {
                     "Company Name": str(client_name),
-                    "Compliance Score": float(score) / 100.0,
-                    # Sends a pure math float (e.g. 0.94) for the Percent field
+                    "Compliance Score": float(score) / 100.0,  # Sends decimal matching percentage logic
                     "Risk Level": str(risk),
                     "Current IT Constraints": f"Deficits found:\n{clauses_text}"
                 }
             }
-        ]
+        ],
+        "typecast": True  # 🚀 CRITICAL FIX: Tells Airtable to auto-format select options and data values
     }
 
     try:
@@ -227,10 +226,11 @@ def save_to_airtable(token, base_id, table_name, file_name, client_name, score, 
         if response.status_code == 200:
             st.sidebar.success("✅ Log synchronized to Airtable!")
         else:
-            # Displays the exact column or error detail if a typo still exists
+            # Clean logging block showing exactly which column is throwing a naming/formatting error
             st.sidebar.error(f"❌ Ledger Sync Error ({response.status_code}): {response.text}")
     except Exception as e:
         st.sidebar.error(f"🔌 Network ledger handshake interrupted: {str(e)}")
+
 
 # -----------------------------------------------------------------------------
 # CORE MAIN APPLICATION FLOW

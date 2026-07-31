@@ -122,10 +122,28 @@ st.title("SGL Tech Enterprise AI Compliance Portal")
 with st.sidebar:
     st.header("Authentication")
 
+    # -------------------------------------------------------------------------
+    # SECURE UI GLASS PANEL INJECTION
+    # -------------------------------------------------------------------------
+    # Force the browser to hide the toggle password visibility eye icon permanently
+    st.markdown(
+        """
+        <style>
+        button[aria-label="Show password"] {
+            display: none !important;
+        }
+        button[aria-label="Hide password"] {
+            display: none !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
     # Inputs automatically pull strings from your secrets configuration file
-    airtable_pat = st.text_input("Airtable PAT", value=SECRET_PAT, type="password", help="Starts with 'pat.'")
-    airtable_base = st.text_input("Airtable Base ID", value=SECRET_BASE, help="Starts with 'app.'")
-    airtable_table = st.text_input("Table Name", value=SECRET_TABLE)
+    airtable_pat = st.text_input("Airtable PAT", value=SECRET_PAT, type="password", help="Starts with 'pat.'", disabled=True)
+    airtable_base = st.text_input("Airtable Base ID", value=SECRET_BASE, help="Starts with 'app.'", disabled=True)
+    airtable_table = st.text_input("Table Name", value=SECRET_TABLE, disabled=True)
 
     st.divider()
     st.header("Document Ingestion")

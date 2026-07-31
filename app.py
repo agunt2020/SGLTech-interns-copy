@@ -224,8 +224,8 @@ def save_to_airtable(token, base_id, table_name, file_name, client_name, score, 
             st.sidebar.success("✅ Log synchronized to Airtable!")
         else:
             st.sidebar.error(f"❌ Ledger Sync Error ({response.status_code})")
-    except Exception:
-        st.sidebar.error("🔌 Network ledger handshake interrupted.")
+    except Exception as e:
+        st.sidebar.error(f"🔌 Network ledger handshake interrupted: {str(e)}")
 
 
 # -----------------------------------------------------------------------------

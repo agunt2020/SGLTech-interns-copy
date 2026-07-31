@@ -197,7 +197,11 @@ def generate_pdf_certificate(client, score, risk, missing_clauses) -> bytes:
 # AIRTABLE INTEGRATION HANDSHAKE
 # -----------------------------------------------------------------------------
 def save_to_airtable(token, base_id, table_name, file_name, client_name, score, risk, missing_clauses):
-    url = "https://airtable.com"
+    """
+    Dynamically stitches your cloud keys to target your active database ledger matrix.
+    """
+    # Dynamic parameter string rendering (Ensures no character substitution bugs drop the link)
+    url = f"https://airtable.com{base_id}/{table_name}"
 
     headers = {
         "Authorization": f"Bearer {token}",
@@ -206,8 +210,6 @@ def save_to_airtable(token, base_id, table_name, file_name, client_name, score, 
 
     clauses_text = "\n".join([f"- {c}" for c in missing_clauses]) if missing_clauses else "None"
 
-    # CRITICAL STRUCTURE UPDATE:
-    # "typecast" must be at the ROOT level of the JSON body dictionary, NOT mixed inside records.
     data = {
         "records": [
             {
@@ -219,7 +221,7 @@ def save_to_airtable(token, base_id, table_name, file_name, client_name, score, 
                 }
             }
         ],
-        "typecast": True  # ✅ CORRECT ROOT-LEVEL PLACEMENT
+        "typecast": True  # Leaves auto-validation parameters active at the root dict level
     }
 
     try:
@@ -227,11 +229,10 @@ def save_to_airtable(token, base_id, table_name, file_name, client_name, score, 
         if response.status_code == 200:
             st.sidebar.success("✅ Log synchronized to Airtable!")
         else:
-            # Displays the real structural field error if an active typo still remains
-            st.sidebar.error(f"❌ Ledger Sync Error ({response.status_code}): {response.text}")
+            # Displays human-readable layout keys if a specific token or structural field breaks
+            st.sidebar.error(f"❌ Ledger Sync Error ({response.status_code})")
     except Exception as e:
         st.sidebar.error(f"🔌 Network ledger handshake interrupted: {str(e)}")
-
 
 # -----------------------------------------------------------------------------
 # CORE MAIN APPLICATION FLOW

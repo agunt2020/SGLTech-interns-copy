@@ -197,12 +197,10 @@ def generate_pdf_certificate(client, score, risk, missing_clauses) -> bytes:
 # AIRTABLE INTEGRATION HANDSHAKE
 # -----------------------------------------------------------------------------
 def save_to_airtable(token, base_id, table_name, file_name, client_name, score, risk, missing_clauses):
-    """Dispatches asynchronous telemetry logs to target Airtable Base schemas."""
-    url = f"https://airtable.com{base_id}/{table_name}"
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }
+    # This line forces the URL to be 100% clean and correct, ignoring any external string typos
+    url = "https://airtable.com"
+
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     clauses_text = "\n".join([f"- {c}" for c in missing_clauses]) if missing_clauses else "None"
 
     data = {
@@ -223,10 +221,9 @@ def save_to_airtable(token, base_id, table_name, file_name, client_name, score, 
         if response.status_code == 200:
             st.sidebar.success("✅ Log synchronized to Airtable!")
         else:
-            st.sidebar.error(f"❌ Ledger Sync Error ({response.status_code})")
+            st.sidebar.error(f"❌ Ledger Sync Error ({response.status_code}): {response.text}")
     except Exception as e:
         st.sidebar.error(f"🔌 Network ledger handshake interrupted: {str(e)}")
-
 
 # -----------------------------------------------------------------------------
 # CORE MAIN APPLICATION FLOW

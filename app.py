@@ -197,19 +197,25 @@ def generate_pdf_certificate(client, score, risk, missing_clauses) -> bytes:
 # AIRTABLE INTEGRATION HANDSHAKE
 # -----------------------------------------------------------------------------
 def save_to_airtable(token, base_id, table_name, file_name, client_name, score, risk, missing_clauses):
-    # This line forces the URL to be 100% clean and correct, ignoring any external string typos
     url = "https://airtable.com"
 
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+
     clauses_text = "\n".join([f"- {c}" for c in missing_clauses]) if missing_clauses else "None"
 
+    # ONLY include the columns the portal populates.
+    # Match the text spelling and data types to your Airtable exactly.
     data = {
         "records": [
             {
                 "fields": {
-                    "Company Name": client_name,
-                    "Compliance Score": f"{float(score) / 100:.2f}",
-                    "Risk Level": risk,
+                    "Company Name": str(client_name),
+                    "Compliance Score": float(score) / 100.0,
+                    # Sends a pure math float (e.g. 0.94) for the Percent field
+                    "Risk Level": str(risk),
                     "Current IT Constraints": f"Deficits found:\n{clauses_text}"
                 }
             }
@@ -221,6 +227,7 @@ def save_to_airtable(token, base_id, table_name, file_name, client_name, score, 
         if response.status_code == 200:
             st.sidebar.success("✅ Log synchronized to Airtable!")
         else:
+            # Displays the exact column or error detail if a typo still exists
             st.sidebar.error(f"❌ Ledger Sync Error ({response.status_code}): {response.text}")
     except Exception as e:
         st.sidebar.error(f"🔌 Network ledger handshake interrupted: {str(e)}")

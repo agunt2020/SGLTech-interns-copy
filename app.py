@@ -206,19 +206,20 @@ def save_to_airtable(token, base_id, table_name, file_name, client_name, score, 
 
     clauses_text = "\n".join([f"- {c}" for c in missing_clauses]) if missing_clauses else "None"
 
-    # Clean payload mapped strictly to your populated parameters
+    # CRITICAL STRUCTURE UPDATE:
+    # "typecast" must be at the ROOT level of the JSON body dictionary, NOT mixed inside records.
     data = {
         "records": [
             {
                 "fields": {
                     "Company Name": str(client_name),
-                    "Compliance Score": float(score) / 100.0,  # Sends decimal matching percentage logic
+                    "Compliance Score": float(score) / 100.0,
                     "Risk Level": str(risk),
                     "Current IT Constraints": f"Deficits found:\n{clauses_text}"
                 }
             }
         ],
-        "typecast": True  # 🚀 CRITICAL FIX: Tells Airtable to auto-format select options and data values
+        "typecast": True  # ✅ CORRECT ROOT-LEVEL PLACEMENT
     }
 
     try:
@@ -226,7 +227,7 @@ def save_to_airtable(token, base_id, table_name, file_name, client_name, score, 
         if response.status_code == 200:
             st.sidebar.success("✅ Log synchronized to Airtable!")
         else:
-            # Clean logging block showing exactly which column is throwing a naming/formatting error
+            # Displays the real structural field error if an active typo still remains
             st.sidebar.error(f"❌ Ledger Sync Error ({response.status_code}): {response.text}")
     except Exception as e:
         st.sidebar.error(f"🔌 Network ledger handshake interrupted: {str(e)}")

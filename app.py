@@ -204,7 +204,7 @@ def save_to_airtable(token, base_id, table_name, file_name, client_name, score, 
     CLEAN_BASE_ID = "appjaWU1aMugMHmJA"
     CLEAN_TABLE_ID = "tblMER6z64dJcXDfs"
 
-    url = f"https://airtable.com{CLEAN_BASE_ID}/{CLEAN_TABLE_ID}"
+    url = f"https://api.airtable.com/v0/{base_id}/{table_name}"
 
     headers = {
         "Authorization": f"Bearer {token}",

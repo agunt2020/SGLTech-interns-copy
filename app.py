@@ -207,27 +207,48 @@ def generate_pdf_certificate(client, score, risk, missing_clauses, roi_data, siz
 # AIRTABLE INTEGRATION HANDSHAKE
 # -----------------------------------------------------------------------------
 def save_to_airtable(token, base_id, table_name, client_name, score, risk, missing_clauses, roi_data):
+    """
+    Synchronizes both compliance readiness scores and strategic ROI financial projections
+    directly to corresponding columns inside the cloud Airtable database spreadsheet ledger.
+    """
     url = f"https://airtable.com{base_id}/{table_name}"
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+
     clauses_text = "\n".join([f"- {c}" for c in missing_clauses]) if missing_clauses else "None"
 
+    # Expanded payload structure incorporating your new ROI metrics mapping slots
     data = {
         "records": [
             {
                 "fields": {
+                    # 1. Existing Compliance Portal Columns
                     "Company Name": str(client_name),
                     "Compliance Score": float(score) / 100.0,
                     "Risk Level": str(risk),
-                    "Current IT Constraints": f"Deficits found:\n{clauses_text}\n\n[ROI Snapshot] Est. Savings: {roi_data['savings_range']}"
+                    "Current IT Constraints": f"Deficits found:\n{clauses_text}",
+
+                    # 2. Brand New Integrated ROI Calculator Columns
+                    "Est. Internal Leadership Cost": int(roi_data['internal_cost']),
+                    "Typical Fractional Range": str(roi_data['fractional_range']),
+                    "Calculated Resource Savings Vector": str(roi_data['savings_range'])
                 }
             }
         ],
-        "typecast": True
+        "typecast": True  # Instructs Airtable to auto-format currency strings and single selects smoothly
     }
+
     try:
-        requests.post(url, headers=headers, json=data)
-    except:
-        pass
+        response = requests.post(url, headers=headers, json=data)
+        if response.status_code == 200:
+            st.sidebar.success("✅ Assessment Log synchronized to Airtable!")
+        else:
+            st.sidebar.error(f"❌ Ledger Sync Error ({response.status_code}): {response.text}")
+    except Exception as e:
+        st.sidebar.error(f"🔌 Network ledger handshake interrupted: {str(e)}")
 
 
 # -----------------------------------------------------------------------------

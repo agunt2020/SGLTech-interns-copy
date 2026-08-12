@@ -211,7 +211,7 @@ def save_to_airtable(token, base_id, table_name, client_name, score, risk, missi
     Synchronizes both compliance readiness scores and strategic ROI financial projections
     directly to corresponding columns inside the cloud Airtable database spreadsheet ledger.
     """
-    url = f"https://airtable.com{base_id}/{table_name}"
+    url = f"https://api.airtable.com/v0/{base_id}/{table_name}"
 
     headers = {
         "Authorization": f"Bearer {token}",
